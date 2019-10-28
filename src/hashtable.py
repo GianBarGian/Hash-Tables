@@ -2,10 +2,10 @@
 # Linked List hash table key/value pair
 # '''
 class LinkedPair:
-    def __init__(self, key, value):
+    def __init__(self, key, value, next_node = None):
         self.key = key
         self.value = value
-        self.next = None
+        self.next = next_node
 
 class HashTable:
     '''
@@ -51,7 +51,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hashed_key = self._hash(key)
+        hash_idx = hashed_key % self.capacity
+        if self.storage[hash_idx]:
+            node = LinkedPair(key, value, self.storage[hash_idx])
+        else:
+            node = LinkedPair(key, value)
+        self.storage[hash_idx] = node
 
 
 
@@ -63,6 +69,24 @@ class HashTable:
 
         Fill this in.
         '''
+        if self.retrieve(key):
+            hashed_key = self._hash(key)
+            hash_idx = hashed_key % self.capacity
+            node = self.storage[hash_idx]
+            previous_node = None
+            while node:
+                if node.key == key:
+                    if previous_node:
+                        previous_node.next = node.next
+                        break
+                    else:
+                        self.storage[hash_idx] = None
+                        break
+                else:
+                    previous_node = node
+                    node = node.next
+        else: 
+            print('The key was not found')
         pass
 
 
@@ -74,7 +98,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hashed_key = self._hash(key)
+        hash_idx = hashed_key % self.capacity
+        node = self.storage[hash_idx] 
+        while node:
+            if node.key == key:
+                return node.value
+            else:
+                node = node.next
+            
 
 
     def resize(self):
@@ -84,7 +116,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hash_table = HashTable(self.capacity * 2)
+        for elem in self.storage:
+            node = elem
+            while node:
+                hash_table.insert(node.key, node.value)
+                node = node.next
+        self.capacity = hash_table.capacity
+        self.storage =  hash_table.storage
 
 
 
