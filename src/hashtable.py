@@ -34,8 +34,10 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
-
+        hashed = 5381
+        for char in key:
+            hashed = (hashed - 1) * 33 + ord(char)
+        return hashed
 
     def _hash_mod(self, key):
         '''
@@ -53,7 +55,7 @@ class HashTable:
 
         Fill this in.
         '''
-        hashed_key = self._hash(key)
+        hashed_key = self._hash_djb2(key)
         hash_idx = hashed_key % self.capacity
         if self.retrieve(key):
             node = self.storage[hash_idx] 
@@ -86,7 +88,7 @@ class HashTable:
         Fill this in.
         '''
         if self.retrieve(key):
-            hashed_key = self._hash(key)
+            hashed_key = self._hash_djb2(key)
             hash_idx = hashed_key % self.capacity
             node = self.storage[hash_idx]
             previous_node = None
@@ -116,7 +118,7 @@ class HashTable:
 
         Fill this in.
         '''
-        hashed_key = self._hash(key)
+        hashed_key = self._hash_djb2(key)
         hash_idx = hashed_key % self.capacity
         node = self.storage[hash_idx] 
         while node:
